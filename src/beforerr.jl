@@ -1,7 +1,8 @@
 module beforerr
 
-# Write your package code here.
-export add_labels!
+using AlgebraOfGraphics, CairoMakie
+
+export add_labels!, pretty_legend!, easy_save
 
 include("utils/makie.jl")
 
