@@ -4,5 +4,5 @@
 
 ```julia
 using Pkg
-Pkg.dev("https://github.com/Beforerr/beforerr.jl")
+Pkg.develop(url="https://github.com/Beforerr/beforerr.jl")
 ```
