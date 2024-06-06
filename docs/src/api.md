@@ -3,7 +3,7 @@
 Functions exported:
 
 ```@autodocs
-Modules = [beforerr]
+Modules = [Beforerr]
 Private = false
 Order = [:function]
 ```
@@ -11,7 +11,7 @@ Order = [:function]
 Private types:
 
 ```@autodocs
-Modules = [beforerr]
+Modules = [Beforerr]
 Public = false
 Order = [:type]
 ```

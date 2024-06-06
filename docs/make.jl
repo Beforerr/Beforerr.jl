@@ -1,7 +1,7 @@
-using Documenter, beforerr
+using Documenter, Beforerr
 
 makedocs(
-    sitename="beforerr.jl"
+    sitename="Beforerr.jl"
 )
 
 deploydocs(
