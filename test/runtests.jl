@@ -1,6 +1,6 @@
-using beforerr
+using Beforerr
 using Test
 
-@testset "beforerr.jl" begin
+@testset "Beforerr.jl" begin
     # Write your tests here.
 end
