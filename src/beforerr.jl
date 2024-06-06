@@ -1,6 +1,6 @@
 module beforerr
 
-using AlgebraOfGraphics, CairoMakie
+using AlgebraOfGraphics, Makie
 
 export add_labels!, pretty_legend!, easy_save
 
