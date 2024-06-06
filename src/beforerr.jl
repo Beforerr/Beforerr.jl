@@ -2,7 +2,8 @@ module beforerr
 
 using AlgebraOfGraphics, Makie
 
-export add_labels!, pretty_legend!, easy_save
+export add_labels!, hideylabels!, pretty_legend!
+export easy_save
 
 include("utils/makie.jl")
 

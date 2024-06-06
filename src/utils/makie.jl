@@ -1,8 +1,11 @@
-function add_label!(layout, label; position=TopLeft())
-    Label(layout[1, 1, position], label,
-        font=:bold,
+function add_label!(layout, label; position=TopLeft(), font=:bold, halign=:right, kwargs...)
+    Label(
+        layout[1, 1, position], label;
+        font=font,
         padding=(0, 40, 0, 0),
-        halign=:right)
+        halign=halign,
+        kwargs...
+    )
 end
 
 
@@ -19,6 +22,11 @@ function add_labels!(layouts; labels=('a':'z'), open="(", close=")")
     end
 end
 
+"""
+    pretty_legend!(fig, grid)
+
+Add a legend to the figure
+"""
 function pretty_legend!(fig, grid)
     legend!(fig[0, 1:end], grid, titleposition=:left, orientation=:horizontal)
 end
@@ -42,17 +50,21 @@ end
 easy_save(name; kwargs...) = easy_save(name, current_figure(); kwargs...)
 
 
-function hideylabels(la::Axis)
-    la.ylabelvisible = false
-end
+hidexlabel!(la::Axis) = la.xlabelvisible = false
+hideylabel!(la::Axis) = la.ylabelvisible = false
 
+
+"""
+Similar to `hideinnerdecorations!` in `AlgebraOfGraphics.jl` but for `FigureGrid`
+"""
 function hideylabels!(fgs)
     if length(fgs) > 1
-        [hideylabels.(fg) for fg in fgs[2:end]]
+        [hideylabel!.(fg) for fg in fgs[2:end]]
     end
 end
 
-for sym in [:hideylabels,]
+
+for sym in [:hidexlabel!, :hideylabel!]
     @eval function $sym(ae::AxisEntries; kwargs...)
         axis = ae.axis
         AlgebraOfGraphics.isaxis2d(axis) && $sym(axis; kwargs...)
