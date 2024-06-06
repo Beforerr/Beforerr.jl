@@ -1,4 +1,4 @@
-# beforerr
+# Beforerr.jl
 
 Julia utils for different packages
 

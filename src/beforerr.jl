@@ -1,4 +1,4 @@
-module beforerr
+module Beforerr
 
 using AlgebraOfGraphics, Makie
 
