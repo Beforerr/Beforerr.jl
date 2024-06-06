@@ -23,6 +23,11 @@ function pretty_legend!(fig, grid)
     legend!(fig[0, 1:end], grid, titleposition=:left, orientation=:horizontal)
 end
 
+"""
+    easy_save(name[, fig]; formats=[:pdf, :png], dir="figures", log=true)
+
+Save a figure in multiple formats
+"""
 function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true)
     path = joinpath(dir, name) |> mkpath
 
@@ -35,3 +40,21 @@ function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true)
 end
 
 easy_save(name; kwargs...) = easy_save(name, current_figure(); kwargs...)
+
+
+function hideylabels(la::Axis)
+    la.ylabelvisible = false
+end
+
+function hideylabels!(fgs)
+    if length(fgs) > 1
+        [hideylabels.(fg) for fg in fgs[2:end]]
+    end
+end
+
+for sym in [:hideylabels,]
+    @eval function $sym(ae::AxisEntries; kwargs...)
+        axis = ae.axis
+        AlgebraOfGraphics.isaxis2d(axis) && $sym(axis; kwargs...)
+    end
+end
