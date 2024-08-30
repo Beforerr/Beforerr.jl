@@ -37,7 +37,8 @@ end
 Save a figure in multiple formats
 """
 function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true)
-    path = joinpath(dir, name) |> mkpath
+    path = joinpath(dir, name) 
+    mkpath(dirname(path))
 
     for format in formats
         save("$path.$format", fig; px_per_unit=4)
