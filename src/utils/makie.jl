@@ -1,3 +1,5 @@
+import AlgebraOfGraphics: FigureGrid
+
 function add_label!(layout, label; position=TopLeft(), font=:bold, halign=:right, kwargs...)
     Label(
         layout[1, 1, position], label;
@@ -22,14 +24,20 @@ function add_labels!(layouts; labels=('a':'z'), open="(", close=")")
     end
 end
 
-"""
-    pretty_legend!(fig, grid)
 
+default_titleposition(position) = position in [:top, :bottom] ? :left : :top
+
+"""
+Add a legend to the figure grid `fg`, with the default legend positioned at the top
+"""
+function pretty_legend!(fg::FigureGrid; position=:top, titleposition=default_titleposition(position), kwargs...)
+    legend!(fg; position=position, titleposition=titleposition, kwargs...)
+end
+
+"""
 Add a legend to the figure
 """
-function pretty_legend!(fig, grid)
-    legend!(fig[0, 1:end], grid, titleposition=:left, orientation=:horizontal)
-end
+pretty_legend!(fig, grid; kwargs...) = pretty_legend!(FigureGrid(fig, grid); kwargs...)
 
 """
     easy_save(name[, fig]; formats=[:pdf, :png], dir="figures", log=true)
@@ -37,7 +45,7 @@ end
 Save a figure in multiple formats
 """
 function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true)
-    path = joinpath(dir, name) 
+    path = joinpath(dir, name)
     mkpath(dirname(path))
 
     for format in formats
@@ -62,6 +70,16 @@ function hideylabels!(fgs)
     if length(fgs) > 1
         [hideylabel!.(fg) for fg in fgs[2:end]]
     end
+end
+
+@kwdef struct PlotOpts
+    add_labels = add_labels!
+    pretty_legend = pretty_legend!
+end
+
+function process_opts!(fg::FigureGrid, axs, opts::PlotOpts)
+    opts.add_labels && opts.add_labels(axs)
+    opts.pretty_legend && opts.pretty_legend(fg)
 end
 
 
