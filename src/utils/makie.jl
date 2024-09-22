@@ -40,17 +40,22 @@ Add a legend to the figure
 pretty_legend!(fig, grid; kwargs...) = pretty_legend!(FigureGrid(fig, grid); kwargs...)
 
 """
-    easy_save(name[, fig]; formats=[:pdf, :png], dir="figures", log=true)
+    easy_save(name[, fig]; formats=[:pdf, :png], dir="figures", log=true, force=false)
 
 Save a figure in multiple formats
 """
-function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true)
-    path = joinpath(dir, name)
-    mkpath(dirname(path))
+function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true, force=false)
+    base_path = joinpath(dir, name)
+    mkpath(dirname(base_path))
 
     for format in formats
-        save("$path.$format", fig; px_per_unit=4)
-        log && @info "Saved $(abspath("$path.$format"))"
+        path = "$base_path.$format"
+        if !force && isfile(path)
+            log && @info "File $(abspath(path)) already exists. Skipping..."
+            continue
+        end
+        save(path, fig; px_per_unit=4)
+        log && @info "Saved $(abspath(path))"
     end
 
     return fig
@@ -72,14 +77,29 @@ function hideylabels!(fgs)
     end
 end
 
-@kwdef struct PlotOpts
+@kwdef struct AxsOpts
     add_labels = add_labels!
+end
+
+@kwdef struct FigureGridOpts
     pretty_legend = pretty_legend!
 end
 
+@kwdef struct PlotOpts
+    axs_opts = AxsOpts()
+    fg_opts = FigureGridOpts()
+end
+
+function process_opts!(x, opts)
+    for name in propertynames(opts)
+        f = getfield(opts, name)
+        isa(f, Function) && f(x)
+    end
+end
+
 function process_opts!(fg::FigureGrid, axs, opts::PlotOpts)
-    opts.add_labels && opts.add_labels(axs)
-    opts.pretty_legend && opts.pretty_legend(fg)
+    process_opts!(fg, opts.fg_opts)
+    process_opts!(axs, opts.axs_opts)
 end
 
 
