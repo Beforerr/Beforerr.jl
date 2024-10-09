@@ -39,25 +39,28 @@ Add a legend to the figure
 """
 pretty_legend!(fig, grid; kwargs...) = pretty_legend!(FigureGrid(fig, grid); kwargs...)
 
+function safe_save(file, io; log=true, force=false, kwargs...)
+    mkpath(dirname(file))
+    if !force && isfile(file)
+        log && @info "File $(abspath(file)) already exists. Skipping..."
+    else
+        save(file, io; kwargs...)
+        log && @info "Saved $(abspath(file))"
+    end
+end
+
 """
     easy_save(name[, fig]; formats=[:pdf, :png], dir="figures", log=true, force=false)
 
 Save a figure in multiple formats
 """
-function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true, force=false)
-    base_path = joinpath(dir, name)
-    mkpath(dirname(base_path))
-
-    for format in formats
-        path = "$base_path.$format"
-        if !force && isfile(path)
-            log && @info "File $(abspath(path)) already exists. Skipping..."
-            continue
-        end
-        save(path, fig; px_per_unit=4)
-        log && @info "Saved $(abspath(path))"
+function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true, force=false, kwargs...)
+    default_kwargs = (;px_per_unit=4)
+    kwargs = merge(default_kwargs, kwargs)
+    for fmt in formats
+        path = joinpath(dir, name * ".$fmt")
+        safe_save(path, fig; log=log, force=force, kwargs...)
     end
-
     return fig
 end
 
