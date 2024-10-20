@@ -1,5 +1,12 @@
 import AlgebraOfGraphics: FigureGrid
 
+function figuresdir(; name = "figures")
+    proj_file = Base.current_project()
+    isnothing(proj_file) ? name : joinpath(dirname(proj_file), name)
+end
+
+figuresdir(args...) = joinpath(figuresdir(), args...)
+
 function add_label!(layout, label; position=TopLeft(), font=:bold, halign=:right, kwargs...)
     Label(
         layout[1, 1, position], label;
@@ -54,7 +61,7 @@ end
 
 Save a figure in multiple formats
 """
-function easy_save(name, fig; formats=[:pdf, :png], dir="figures", log=true, force=false, kwargs...)
+function easy_save(name, fig; formats=[:pdf, :png], dir=figuresdir(), log=true, force=false, kwargs...)
     default_kwargs = (;px_per_unit=4)
     kwargs = merge(default_kwargs, kwargs)
     for fmt in formats
