@@ -1,3 +1,5 @@
+using AlgebraOfGraphics: default_isvertical
+
 const SUPPORTED_POS = [:top, :bottom, :left, :right]
 
 Base.:*(l::Layer, p::NamedTuple) = l * mapping(; p...)
@@ -25,10 +27,10 @@ end
 
 Like `AlgebraOfGraphics.draw!`, but adds a colorbar.
 """
-function cdraw!(f::GridLayout, args...; position=:right, kw...)
+function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvertical(position), kw...)
     grids = draw!(f[1, 1], args...; kw...)
     guide_pos = guides_position(f, position)
-    colorbar!(guide_pos, grids)
+    colorbar!(guide_pos, grids; vertical)
     return grids
 end
 
