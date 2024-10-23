@@ -1,7 +1,7 @@
 name = "Beforerr"
 uuid = "49aed396-608e-4c3f-b6d6-a749216c9ea7"
 authors = ["Beforerr <zzj956959688@gmail.com> and contributors"]
-version = "0.1.0"
+version = "0.1.1"
 
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
