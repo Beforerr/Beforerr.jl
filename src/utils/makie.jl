@@ -1,5 +1,7 @@
 import AlgebraOfGraphics: FigureGrid
 
+DEFAULT_FORMATS = [:png, :pdf]
+
 function figuresdir(; name = "figures")
     proj_file = Base.current_project()
     isnothing(proj_file) ? name : joinpath(dirname(proj_file), name)
@@ -57,11 +59,11 @@ function safe_save(file, io; log=true, force=false, kwargs...)
 end
 
 """
-    easy_save(name[, fig]; formats=[:pdf, :png], dir="figures", log=true, force=false)
+    easy_save(name[, fig]; formats=[:pdf, :png], dir=figuresdir(), log=true, force=false, kwargs...)
 
 Save a figure in multiple formats
 """
-function easy_save(name, fig; formats=[:pdf, :png], dir=figuresdir(), log=true, force=false, kwargs...)
+function easy_save(name, fig; formats=DEFAULT_FORMATS, dir=figuresdir(), log=true, force=false, kwargs...)
     default_kwargs = (;px_per_unit=4)
     kwargs = merge(default_kwargs, kwargs)
     for fmt in formats
