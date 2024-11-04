@@ -2,19 +2,18 @@ import AlgebraOfGraphics: FigureGrid
 
 DEFAULT_FORMATS = [:png, :pdf]
 
-function figuresdir(; name = "figures")
+function figuresdir(; name="figures")
     proj_file = Base.current_project()
     isnothing(proj_file) ? name : joinpath(dirname(proj_file), name)
 end
 
 figuresdir(args...) = joinpath(figuresdir(), args...)
 
-function add_label!(layout, label; position=TopLeft(), font=:bold, halign=:right, kwargs...)
+function add_label!(layout, label; position=TopLeft(), font=:bold, halign=:left, valign=:bottom, padding=(0, 0, 0, -30), kwargs...)
     Label(
         layout[1, 1, position], label;
-        font=font,
-        padding=(0, 40, 0, 0),
-        halign=halign,
+        font,
+        halign, valign, padding,
         kwargs...
     )
 end
@@ -26,7 +25,7 @@ add labels to a grid of layouts
 # Notes
 - See `tag_facet` in `egg` for reference
 """
-function add_labels!(layouts; labels=('a':'z'), open="(", close=")")
+function add_labels!(layouts; labels='a':'z', open="(", close=")")
     for (label, layout) in zip(labels, layouts)
         tag = open * label * close
         add_label!(layout, tag)
@@ -64,7 +63,7 @@ end
 Save a figure in multiple formats
 """
 function easy_save(name, fig; formats=DEFAULT_FORMATS, dir=figuresdir(), log=true, force=false, kwargs...)
-    default_kwargs = (;px_per_unit=4)
+    default_kwargs = (; px_per_unit=4)
     kwargs = merge(default_kwargs, kwargs)
     for fmt in formats
         path = joinpath(dir, name * ".$fmt")
