@@ -27,10 +27,10 @@ end
 
 Like `AlgebraOfGraphics.draw!`, but adds a colorbar.
 """
-function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvertical(position), kw...)
+function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvertical(position), colorbar = (;), kw...)
     grids = draw!(f[1, 1], args...; kw...)
     guide_pos = guides_position(f, position)
-    colorbar!(guide_pos, grids; vertical)
+    colorbar!(guide_pos, grids; vertical, colorbar...)
     return grids
 end
 
