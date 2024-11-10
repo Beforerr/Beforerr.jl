@@ -1,4 +1,5 @@
 using AlgebraOfGraphics: default_isvertical
+using AlgebraOfGraphics: FigureGrid
 
 const SUPPORTED_POS = [:top, :bottom, :left, :right]
 
@@ -27,7 +28,7 @@ end
 
 Like `AlgebraOfGraphics.draw!`, but adds a colorbar.
 """
-function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvertical(position), colorbar = (;), kw...)
+function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvertical(position), colorbar=(;), kw...)
     grids = draw!(f[1, 1], args...; kw...)
     guide_pos = guides_position(f, position)
     colorbar!(guide_pos, grids; vertical, colorbar...)
@@ -35,3 +36,24 @@ function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvert
 end
 
 cdraw!(f::Union{GridPosition,GridSubposition}, args...; kw...) = cdraw!(GridLayout(f), args...; kw...)
+
+for sym in [:hidexlabel!, :hideylabel!]
+    @eval function $sym(ae::AxisEntries; kwargs...)
+        axis = ae.axis
+        AlgebraOfGraphics.isaxis2d(axis) && $sym(axis; kwargs...)
+    end
+end
+
+@kwdef struct FigureGridOpts
+    pretty_legend = pretty_legend!
+end
+
+@kwdef struct PlotOpts
+    axs_opts = AxsOpts()
+    fg_opts = FigureGridOpts()
+end
+
+function process_opts!(fg::FigureGrid, axs, opts::PlotOpts)
+    process_opts!(fg, opts.fg_opts)
+    process_opts!(axs, opts.axs_opts)
+end
