@@ -1,27 +1,9 @@
 using AlgebraOfGraphics: default_isvertical
 using AlgebraOfGraphics: FigureGrid
 
-const SUPPORTED_POS = [:top, :bottom, :left, :right]
-
 Base.:*(l::Layer, p::NamedTuple) = l * mapping(; p...)
 Base.:*(l::Layer, p::Tuple) = l * mapping(p...)
 
-"""
-    guides_position(f, position)
-
-Return the position of the guides for the given `position` in the `f`.
-"""
-function guides_position(f, position)
-    position = Symbol(position)
-    position ∉ SUPPORTED_POS && throw(ArgumentError("Legend position $position ∉ $SUPPORTED_POS"))
-
-    @match position begin
-        :bottom => f[end+1, :]
-        :top => f[0, :]
-        :right => f[:, end+1]
-        :left => f[:, 0]
-    end
-end
 
 """
     cdraw!(f, args...; position=:right, kwargs...)
@@ -36,6 +18,16 @@ function cdraw!(f::GridLayout, args...; position=:right, vertical=default_isvert
 end
 
 cdraw!(f::Union{GridPosition,GridSubposition}, args...; kw...) = cdraw!(GridLayout(f), args...; kw...)
+
+
+"""Add a legend to the figure grid `fg`, with the default legend positioned at the top"""
+function pretty_legend!(fg::FigureGrid; position=:top, titleposition=default_titleposition(position), kwargs...)
+    legend!(fg; position=position, titleposition=titleposition, kwargs...)
+end
+
+"""Add a legend to the figure"""
+pretty_legend!(fig, grid; kwargs...) = pretty_legend!(FigureGrid(fig, grid); kwargs...)
+
 
 for sym in [:hidexlabel!, :hideylabel!]
     @eval function $sym(ae::AxisEntries; kwargs...)

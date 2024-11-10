@@ -1,5 +1,6 @@
 include("./save.jl")
 
+const SUPPORTED_POS = [:top, :bottom, :left, :right]
 DEFAULT_FORMATS = [:png, :pdf]
 
 function figuresdir(; name="figures")
@@ -57,20 +58,27 @@ function add_labels!(layouts; labels='a':'z', open="(", close=")")
     end
 end
 
+# -----
+# Position
+# -----
 
 default_titleposition(position) = position in [:top, :bottom] ? :left : :top
 
 """
-Add a legend to the figure grid `fg`, with the default legend positioned at the top
+    guides_position(f, position)
+
+Return the position of the guides for the given `position` in the `f`.
 """
-function pretty_legend!(fg::FigureGrid; position=:top, titleposition=default_titleposition(position), kwargs...)
-    legend!(fg; position=position, titleposition=titleposition, kwargs...)
+function guides_position(f, position)
+    @match Symbol(position) begin
+        :bottom => f[end+1, :]
+        :top => f[0, :]
+        :right => f[:, end+1]
+        :left => f[:, 0]
+        _ => throw(ArgumentError("Legend position $position ∉ $SUPPORTED_POS"))
+    end
 end
 
-"""
-Add a legend to the figure
-"""
-pretty_legend!(fig, grid; kwargs...) = pretty_legend!(FigureGrid(fig, grid); kwargs...)
 
 hidexlabel!(la::Axis) = la.xlabelvisible = false
 hideylabel!(la::Axis) = la.ylabelvisible = false
