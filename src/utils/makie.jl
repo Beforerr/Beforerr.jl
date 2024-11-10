@@ -18,6 +18,31 @@ function add_label!(layout, label; position=TopLeft(), font=:bold, halign=:left,
     )
 end
 
+# -----
+# Theme
+# -----
+const HWRATIO = 0.68
+
+"""1 point in CairoMakie is equal to 1/72 inch."""
+inch2point(x) = floor(Int, 72x)
+
+"""Convert figure size from inches to points."""
+function figsize(width; height=missing, hwratio=HWRATIO)
+    height = ismissing(height) ? width * hwratio : height
+    return (inch2point(width), inch2point(height))
+end
+
+function theme_pub(; width=6.75, hwratio=HWRATIO, axis=(;), kwargs...)
+    default_axis_theme = (;)
+    axis_theme = merge(default_axis_theme, axis)
+
+    theme_args = (
+        figure_padding=0,
+        size=figsize(width; hwratio),
+        Axis=axis_theme,
+    )
+    Theme(; theme_args...)
+end
 
 """
 add labels to a grid of layouts
