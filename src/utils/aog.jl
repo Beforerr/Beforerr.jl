@@ -21,8 +21,9 @@ cdraw!(f::Union{GridPosition,GridSubposition}, args...; kw...) = cdraw!(GridLayo
 
 
 """Add a legend to the figure grid `fg`, with the default legend positioned at the top"""
-function pretty_legend!(fg::FigureGrid; position=:top, titleposition=default_titleposition(position), kwargs...)
-    legend!(fg; position=position, titleposition=titleposition, kwargs...)
+function pretty_legend!(fg::FigureGrid; position=:top, kwargs...)
+    titleposition = position in (:top, :bottom) ? :left : :top
+    legend!(fg; position, titleposition, kwargs...)
 end
 
 """Add a legend to the figure"""

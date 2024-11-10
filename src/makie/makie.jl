@@ -61,13 +61,10 @@ end
 # -----
 # Position
 # -----
-
-default_titleposition(position) = position in [:top, :bottom] ? :left : :top
-
 """
     guides_position(f, position)
 
-Return the position of the guides for the given `position` in the `f`.
+Return the position of the guides (like colorbar) for the given `position` in the `f`.
 """
 function guides_position(f, position)
     @match Symbol(position) begin
