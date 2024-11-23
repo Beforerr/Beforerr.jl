@@ -10,5 +10,6 @@ export cdraw!
 
 include("makie/makie.jl")
 include("utils/aog.jl")
+include("stats.jl")
 
 end
