@@ -11,3 +11,7 @@ Julia utils for different packages
 using Pkg
 Pkg.develop(url="https://github.com/Beforerr/beforerr.jl")
 ```
+
+## References
+
+[MakieExtra.jl](https://github.com/JuliaAPlavin/MakieExtra.jl)

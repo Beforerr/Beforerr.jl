@@ -1,11 +1,15 @@
 module Beforerr
 
 using AlgebraOfGraphics, Makie
+using Match
 
 export add_labels!, hideylabels!, pretty_legend!
 export AxsOpts, FigureGridOpts, PlotOpts, process_opts!
-export easy_save
+export figuresdir, easy_save
+export cdraw!
 
-include("utils/makie.jl")
+include("makie/makie.jl")
+include("utils/aog.jl")
+include("stats.jl")
 
 end
