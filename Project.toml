@@ -17,6 +17,7 @@ DistsFitExt = ["FHist", "Distributions"]
 
 [compat]
 AlgebraOfGraphics = "0.8"
+Distributions = "0.25"
 FHist = "0.11.7"
 Makie = "0.21"
 Match = "2.1.0"
