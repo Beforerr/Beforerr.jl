@@ -1,5 +1,6 @@
 using AlgebraOfGraphics: default_isvertical
 using AlgebraOfGraphics: FigureGrid
+using DataFrames, DataFramesMeta
 
 Base.:*(l::Layer, p::NamedTuple) = l * mapping(; p...)
 Base.:*(l::Layer, p::Tuple) = l * mapping(p...)
@@ -20,15 +21,17 @@ end
 cdraw!(f::Union{GridPosition,GridSubposition}, args...; kw...) = cdraw!(GridLayout(f), args...; kw...)
 
 fn(v::Pair) = v[1], v[2]
-fn(v) = v, identity
+fn(v) = v, string
+vals(df::DataFrames.DataFrameColumns, s) = unique(df[s]) |> sort
+vals(df::DataFrame, s) = unique(df[!, s]) |> sort
 
 """
-    sdraw!(layout, layer, facet=:v, dim=:col; scales=scales(), kwargs...)
+    sdraw!(layout, layer, facet; dim=:col; scales=scales(), kwargs...)
 
 Draw a figure grid with facets by a column or row.
 """
-function sdraw!(layout, layer::Layer, facet; dim=:col, scales=scales(), kwargs...)
-    df = layer.data.columns
+function sdraw!(layout, layer::Layer, facet; dim=:col, scales=scales(), add_cb=false, kwargs...)
+    df = getfield(layer.data.columns, :df)
     facet_sym, facet_func = fn(facet)
     vs = vals(df, facet_sym)  # Get unique values
     fgs = if dim == :col
@@ -41,7 +44,11 @@ function sdraw!(layout, layer::Layer, facet; dim=:col, scales=scales(), kwargs..
         plt = layer * data(df_s)
         grids = draw!(fg, plt, scales; kwargs...)
         label_pos = dim == :col ? fg[0, :] : fg[:, 0]
-        Label(label_pos, facet_func(v), tellwidth=(dim == :col))
+        Label(label_pos, facet_func(v), tellwidth=false)
+        # only add last colorbar label
+        colorbar_kwargs = Dict()
+        v == vs[end] || push!(colorbar_kwargs, :label => "")
+        add_cb && colorbar!(fg[:, 0], grids; colorbar_kwargs...)
         grids
     end
 end

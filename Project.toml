@@ -5,6 +5,8 @@ version = "0.1.1"
 
 [deps]
 AlgebraOfGraphics = "cbdf2221-f076-402e-a563-3d30da359d67"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataFramesMeta = "1313f7d8-7da2-5740-9ea0-a2ca25f37964"
 Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 Match = "7eb4fadd-790c-5f42-8a69-bfa0b872bfbf"
 
@@ -17,6 +19,8 @@ DistsFitExt = ["FHist", "Distributions"]
 
 [compat]
 AlgebraOfGraphics = "0.8"
+DataFrames = "1.7.0"
+DataFramesMeta = "0.15.4"
 Distributions = "0.25"
 FHist = "0.11.7"
 Makie = "0.21"
