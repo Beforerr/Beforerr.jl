@@ -19,6 +19,32 @@ end
 
 cdraw!(f::Union{GridPosition,GridSubposition}, args...; kw...) = cdraw!(GridLayout(f), args...; kw...)
 
+fn(v::Pair) = v[1], v[2]
+fn(v) = v, identity
+
+"""
+    sdraw!(layout, layer, facet=:v, dim=:col; scales=scales(), kwargs...)
+
+Draw a figure grid with facets by a column or row.
+"""
+function sdraw!(layout, layer::Layer, facet; dim=:col, scales=scales(), kwargs...)
+    df = layer.data.columns
+    facet_sym, facet_func = fn(facet)
+    vs = vals(df, facet_sym)  # Get unique values
+    fgs = if dim == :col
+        [layout[1, i] for i in 1:length(vs)]
+    else
+        [layout[i, 1] for i in 1:length(vs)]
+    end
+    return map(zip(fgs, vs)) do (fg, v)
+        df_s = @subset(df, $facet_sym .== v)
+        plt = layer * data(df_s)
+        grids = draw!(fg, plt, scales; kwargs...)
+        label_pos = dim == :col ? fg[0, :] : fg[:, 0]
+        Label(label_pos, facet_func(v), tellwidth=(dim == :col))
+        grids
+    end
+end
 
 """Add a legend to the figure grid `fg`, with the default legend positioned at the top"""
 function pretty_legend!(fg::FigureGrid; position=:top, kwargs...)
