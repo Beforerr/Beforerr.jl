@@ -18,7 +18,7 @@ FHist = "68837c9b-b678-4cd5-9925-8a54edc8f695"
 DistsFitExt = ["FHist", "Distributions"]
 
 [compat]
-AlgebraOfGraphics = "0.8"
+AlgebraOfGraphics = "0.8, 0.9"
 DataFrames = "1.7.0"
 DataFramesMeta = "0.15.4"
 Distributions = "0.25"
