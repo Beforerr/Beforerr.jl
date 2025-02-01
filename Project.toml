@@ -19,12 +19,12 @@ DistsFitExt = ["FHist", "Distributions"]
 
 [compat]
 AlgebraOfGraphics = "0.8, 0.9"
-DataFrames = "1.7.0"
-DataFramesMeta = "0.15.4"
+DataFrames = "1.7"
+DataFramesMeta = "0.15"
 Distributions = "0.25"
-FHist = "0.11.7"
+FHist = "0.11"
 Makie = "0.21, 0.22"
-Match = "2.1.0"
+Match = "2"
 julia = "1.9"
 
 [extras]
