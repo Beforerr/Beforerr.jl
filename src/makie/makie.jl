@@ -34,19 +34,43 @@ function figsize(width; height=missing, hwratio=HWRATIO)
 end
 
 function theme_pub(; width=6.75, hwratio=HWRATIO, axis=(;), kwargs...)
-    default_axis_theme = (;)
+    # basesize=10
+    legend_theme = (
+        framevisible=false,
+        padding=(0, 0, 0, 0),
+        margin=(0, 0, 0, 0),
+        # rowgap=-10,
+        # colgap=4,
+    )
+
+    default_axis_theme = (
+        xgridvisible=false,
+        ygridvisible=false,
+        xlabelfont=:bold,
+        ylabelfont=:bold,
+        # xlabelsize=basesize,
+        # ylabelsize=basesize,
+        # xticklabelsize=basesize * 0.8,
+        # yticklabelsize=basesize * 0.8,
+    )
     axis_theme = merge(default_axis_theme, axis)
 
+    Series = (; color=Makie.wong_colors())
+    Lines = (; linewidth=2)
     theme_args = (
         figure_padding=0,
         size=figsize(width; hwratio),
         Axis=axis_theme,
+        Legend=legend_theme,
+        Series,
+        Lines,
+        kwargs...
     )
     Theme(; theme_args...)
 end
 
 """
-add labels to a grid of layouts
+Add labels to a grid of layouts
 
 # Notes
 - See `tag_facet` in `egg` for reference
@@ -56,6 +80,17 @@ function add_labels!(layouts; labels='a':'z', open="(", close=")")
         tag = open * label * close
         add_label!(layout, tag)
     end
+end
+
+"""
+Add labels to a figure, automatically searching for blocks to label.
+
+# Notes
+- https://github.com/brendanjohnharris/Foresight.jl/blob/main/src/Layouts.jl#L2
+"""
+function add_labels!(; f=current_figure(), allowedblocks=Union{Axis,Axis3,PolarAxis}, kwargs...)
+    axs = filter(x -> x isa allowedblocks, f.content)
+    add_labels!(axs; kwargs...)
 end
 
 # -----
