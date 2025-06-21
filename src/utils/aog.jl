@@ -1,9 +1,10 @@
+using AlgebraOfGraphics: Layers
 using AlgebraOfGraphics: default_isvertical
 using AlgebraOfGraphics: FigureGrid
 using DataFrames, DataFramesMeta
 
-Base.:*(l::Layer, p::NamedTuple) = l * mapping(; p...)
-Base.:*(l::Layer, p::Tuple) = l * mapping(p...)
+Base.:*(l::Union{Layer,Layers}, p::NamedTuple) = l * mapping(; p...)
+Base.:*(l::Union{Layer,Layers}, p::Tuple) = l * mapping(p...)
 
 
 """
