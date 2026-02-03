@@ -3,19 +3,24 @@ using AlgebraOfGraphics: default_isvertical, AxisEntries
 using AlgebraOfGraphics: FigureGrid
 using DataFrames, DataFramesMeta
 
-Base.:*(l::Union{Layer, Layers}, p::NamedTuple) = l * mapping(; p...)
-Base.:*(l::Union{Layer, Layers}, p::Tuple) = l * mapping(p...)
+export hide_facet_labels!, *ₗ
 
+*ₗ(l::Union{Layer, Layers}, p::NamedTuple) = l * mapping(; p...)
+*ₗ(l::Union{Layer, Layers}, p::Tuple) = l * mapping(p...)
+*ₗ(l::Union{Layer, Layers}, m) = l * m
 
 """
     cdraw!(f, args...; position=:right, kwargs...)
 
 Like `AlgebraOfGraphics.draw!`, but adds a colorbar.
 """
-function cdraw!(f::GridLayout, args...; position = :right, vertical = default_isvertical(position), colorbar = (;), kw...)
+function cdraw!(f::GridLayout, args...; gap = 4, position = :right, vertical = default_isvertical(position), colorbar = (;), kw...)
     grids = draw!(f[1, 1], args...; kw...)
     guide_pos = guides_position(f, position)
     colorbar!(guide_pos, grids; vertical, colorbar...)
+    if position == :right
+        colgap!(f, gap)
+    end
     return grids
 end
 
@@ -62,6 +67,34 @@ end
 
 """Add a legend to the figure"""
 pretty_legend!(fig, grid; kwargs...) = pretty_legend!(FigureGrid(fig, grid); kwargs...)
+
+add_labels!(fg::FigureGrid; kwargs...) = add_labels!(fg.figure; kwargs...)
+
+function hide_facet_labels!(ax::Makie.Axis; titlegap = 0)
+    ax.titlevisible[] = false
+    ax.titlesize[] = 0
+    ax.titlegap[] = titlegap
+    return
+end
+
+function hide_facet_labels!(g; titlegap = 0)
+    hide_facet_labels!(g[1].axis; titlegap)
+    return
+end
+
+function hide_facet_labels!(g::FigureGrid; kw...)
+    for ae in g.grid
+        hide_facet_labels!(ae.axis; kw...)
+    end
+    return
+end
+
+# https://github.com/MakieOrg/AlgebraOfGraphics.jl/issues/711
+for sym in [:xlims!, :ylims!]
+    @eval function Makie.$sym(ae::AxisEntries, args...; kwargs...)
+        return Makie.$sym(ae.axis, args...; kwargs...)
+    end
+end
 
 
 for sym in [:hidexlabel!, :hideylabel!]
